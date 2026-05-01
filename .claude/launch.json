@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "noves-story-builder",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["/Users/alextheaker/Documents/CLAUDE WORK/noves-story-builder/serve.js"],
+      "port": 3456
+    }
+  ]
+}
