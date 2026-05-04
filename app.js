@@ -41,6 +41,8 @@ const DEFAULT_STATE = {
   section4: {
     headlineIndex: 0,
     headlineCustom: '',
+    subheadingIndex: 0,
+    subheadingCustom: '',
     selectedBlocks: [0, 1, 2],
     blockOrder: [0, 1, 2],
     customBlock: { label: '', copy: '' },
@@ -92,7 +94,8 @@ function getSubheading2() { return STATE.section2.subheadingCustom || DATA.secti
 function getSentinelText(){ return STATE.section2.sentinelCustomText || DATA.section2.sentinelOptions[STATE.section2.sentinelIndex]?.label || 'Governed access'; }
 function getHeadline3()   { return STATE.section3.headlineCustom  || DATA.section3.headlines[STATE.section3.headlineIndex]  || DATA.section3.headlines[0]; }
 function getSubheading3() { return STATE.section3.subheadingCustom || DATA.section3.subheadings[STATE.section3.subheadingIndex] || DATA.section3.subheadings[0]; }
-function getHeadline4()   { return STATE.section4.headlineCustom  || DATA.section4.headlines[STATE.section4.headlineIndex]  || DATA.section4.headlines[0]; }
+function getHeadline4()    { return STATE.section4.headlineCustom   || DATA.section4.headlines[STATE.section4.headlineIndex]   || DATA.section4.headlines[0]; }
+function getSubheading4()  { return STATE.section4.subheadingCustom || DATA.section4.subheadings[STATE.section4.subheadingIndex] || DATA.section4.subheadings[0]; }
 
 // ─── UTILS ───────────────────────────────────────────────────
 
@@ -373,6 +376,11 @@ function renderSection4Body() {
       </div>`;
   }).join('');
 
+  const subheadingCards = DATA.section4.subheadings.map((s, i) => {
+    const active = STATE.section4.subheadingIndex === i && !STATE.section4.subheadingCustom;
+    return `<div class="option-card ${active?'active':''}" onclick="setS4Subheading(${i})">${esc(s)}</div>`;
+  }).join('');
+
   return `
     <div class="field-group">
       <div class="field-label">Headline</div>
@@ -381,6 +389,16 @@ function renderSection4Body() {
         <div class="write-your-own-label">Write your own headline</div>
         <input type="text" class="text-input" id="s4-headline-custom"
           placeholder="Write your headline…" value="${esc(STATE.section4.headlineCustom)}">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Subheading</div>
+      <div class="option-card-group">${subheadingCards}</div>
+      <div class="write-your-own-wrap ${STATE.section4.subheadingCustom?'active':''}">
+        <div class="write-your-own-label">Write your own subheading</div>
+        <textarea class="text-input" id="s4-subheading-custom" rows="2"
+          placeholder="Alternative subheading…" style="resize:vertical;">${esc(STATE.section4.subheadingCustom)}</textarea>
       </div>
     </div>
 
@@ -467,7 +485,8 @@ function wireLeftPanelInputs() {
     el.addEventListener('input', e => { STATE.section3.stageSubheadings[e.target.dataset.stageSubheading] = e.target.value; saveState(); renderCanvas(); });
   });
 
-  bind('s4-headline-custom',     'input', e => { STATE.section4.headlineCustom = e.target.value; saveState(); renderCanvas(); renderDecisionPanel(); });
+  bind('s4-headline-custom',     'input', e => { STATE.section4.headlineCustom   = e.target.value; saveState(); renderCanvas(); renderDecisionPanel(); });
+  bind('s4-subheading-custom',   'input', e => { STATE.section4.subheadingCustom = e.target.value; saveState(); renderLeftPanel(); renderCanvas(); });
   bind('s4-custom-block-toggle', 'change',e => { STATE.section4.includeCustomBlock = e.target.checked; saveState(); renderLeftPanel(); renderCanvas(); });
   bind('s4-custom-label',        'input', e => { STATE.section4.customBlock.label = e.target.value; saveState(); renderCanvas(); });
   bind('s4-custom-copy',         'input', e => { STATE.section4.customBlock.copy  = e.target.value; saveState(); renderCanvas(); });
@@ -657,7 +676,8 @@ function renderCanvasSection4() {
     <div id="canvas-section4" class="cs-section cs-subtle" onclick="setActiveSection('section4')" style="cursor:pointer;">
       <div class="cs-section-tag">Section 4 — Growth Story</div>
       <div class="cs-center">
-        <h2 class="cs-headline" style="margin-bottom:40px;">${esc(headline)}</h2>
+        <h2 class="cs-headline">${esc(headline)}</h2>
+        <p class="cs-subheading" style="margin-bottom:40px;">${esc(getSubheading4())}</p>
         <div id="section4-block-list" style="width:100%;max-width:640px;">
           ${empty}${items}${customItem}
         </div>
@@ -745,10 +765,12 @@ function decisionsS4() {
   const d1 = `
     <div class="decision-card" style="grid-column:span 2;">
       <h3>Decision 1 — Headline</h3>
-      ${DATA.section4.headlines.map((h,i) => `
-        <button class="decision-option ${STATE.section4.headlineIndex===i && !STATE.section4.headlineCustom ? 'active' : ''}"
-          onclick="setS4Headline(${i})">${esc(h)}</button>`).join('')}
-      ${STATE.section4.headlineCustom ? `<button class="decision-option active">Custom: "${esc(STATE.section4.headlineCustom)}"</button>` : ''}
+      <div class="decision-scroll">
+        ${DATA.section4.headlines.map((h,i) => `
+          <button class="decision-option ${STATE.section4.headlineIndex===i && !STATE.section4.headlineCustom ? 'active' : ''}"
+            onclick="setS4Headline(${i})">${esc(h)}</button>`).join('')}
+        ${STATE.section4.headlineCustom ? `<button class="decision-option active">Custom: "${esc(STATE.section4.headlineCustom)}"</button>` : ''}
+      </div>
     </div>`;
   const d2 = `
     <div class="decision-card" style="grid-column:span 2;">
@@ -791,12 +813,13 @@ function setActiveSection(key) {
   if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function setS2Headline(i)  { STATE.section2.headlineIndex  = i; STATE.section2.headlineCustom   = ''; saveState(); renderLeftPanel(); renderCanvas(); renderDecisionPanel(); }
-function setS2Subheading(i){ STATE.section2.subheadingIndex = i; STATE.section2.subheadingCustom = ''; saveState(); renderCanvas(); }
-function setSentinel(i)    { STATE.section2.sentinelIndex   = i; STATE.section2.sentinelCustomText = ''; saveState(); renderLeftPanel(); renderCanvas(); renderDecisionPanel(); }
-function setS3Headline(i)  { STATE.section3.headlineIndex  = i; STATE.section3.headlineCustom   = ''; saveState(); renderCanvas(); renderDecisionPanel(); }
-function setS3Subheading(i){ STATE.section3.subheadingIndex = i; STATE.section3.subheadingCustom = ''; saveState(); renderCanvas(); }
-function setS4Headline(i)  { STATE.section4.headlineIndex  = i; STATE.section4.headlineCustom   = ''; saveState(); renderCanvas(); renderDecisionPanel(); }
+function setS2Headline(i)   { STATE.section2.headlineIndex   = i; STATE.section2.headlineCustom    = ''; saveState(); renderLeftPanel(); renderCanvas(); renderDecisionPanel(); }
+function setS2Subheading(i) { STATE.section2.subheadingIndex  = i; STATE.section2.subheadingCustom  = ''; saveState(); renderLeftPanel(); renderCanvas(); }
+function setSentinel(i)     { STATE.section2.sentinelIndex    = i; STATE.section2.sentinelCustomText = ''; saveState(); renderLeftPanel(); renderCanvas(); renderDecisionPanel(); }
+function setS3Headline(i)   { STATE.section3.headlineIndex   = i; STATE.section3.headlineCustom    = ''; saveState(); renderLeftPanel(); renderCanvas(); renderDecisionPanel(); }
+function setS3Subheading(i) { STATE.section3.subheadingIndex  = i; STATE.section3.subheadingCustom  = ''; saveState(); renderLeftPanel(); renderCanvas(); }
+function setS4Headline(i)   { STATE.section4.headlineIndex   = i; STATE.section4.headlineCustom    = ''; saveState(); renderLeftPanel(); renderCanvas(); renderDecisionPanel(); }
+function setS4Subheading(i) { STATE.section4.subheadingIndex  = i; STATE.section4.subheadingCustom  = ''; saveState(); renderLeftPanel(); renderCanvas(); }
 
 function addCustomBubble(type) {
   const input = document.getElementById(type + '-bubble-input');
