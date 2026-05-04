@@ -689,10 +689,12 @@ function decisionsS2() {
   const d1 = `
     <div class="decision-card">
       <h3>Decision 1 — Headline</h3>
-      ${DATA.section2.headlines.map((h,i) => `
-        <button class="decision-option ${STATE.section2.headlineIndex===i && !STATE.section2.headlineCustom ? 'active' : ''}"
-          onclick="setS2Headline(${i})">${esc(h)}</button>`).join('')}
-      ${STATE.section2.headlineCustom ? `<button class="decision-option active">Custom: "${esc(STATE.section2.headlineCustom)}"</button>` : ''}
+      <div class="decision-scroll">
+        ${DATA.section2.headlines.map((h,i) => `
+          <button class="decision-option ${STATE.section2.headlineIndex===i && !STATE.section2.headlineCustom ? 'active' : ''}"
+            onclick="setS2Headline(${i})">${esc(h)}</button>`).join('')}
+        ${STATE.section2.headlineCustom ? `<button class="decision-option active">Custom: "${esc(STATE.section2.headlineCustom)}"</button>` : ''}
+      </div>
     </div>`;
   const d2 = `
     <div class="decision-card">
