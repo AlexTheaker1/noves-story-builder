@@ -44,6 +44,9 @@ body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
   user-select: none;
 }
 .acc-header:hover { background: #f9fafb; }
+.acc-header.open { background: #eef2ff; border-radius: 6px; }
+.acc-header.open .acc-label { color: #4338ca; }
+.acc-header.open .acc-chevron { color: #6366f1; }
 
 .acc-chevron { font-size: 0.7rem; color: #9ca3af; flex-shrink: 0; transition: transform 0.15s; }
 .acc-label { font-size: 0.78rem; font-weight: 600; color: #111827; }
@@ -669,5 +672,4 @@ textarea.text-input { resize: vertical; line-height: 1.55; }
   .cs-headline { font-size: 1.75rem; }
 
   .s2-diagram, .cs3-stages, #section4-block-list { max-width: 100%; }
-  .notes-block { display: none !important; }
 }

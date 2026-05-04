@@ -5,6 +5,7 @@
 const DEFAULT_STATE = {
   ui: { activeSection: 'section1', showInstructions: false },
   section1: {
+    headlineCustom: '',
     subheadingCustom: '',
     notes: '',
   },
@@ -84,6 +85,7 @@ function resetState() {
 
 // ─── CONTENT GETTERS ─────────────────────────────────────────
 
+function getHeadline1()    { return STATE.section1.headlineCustom   || DATA.section1.headline; }
 function getSubheading1() { return STATE.section1.subheadingCustom || DATA.section1.subheading; }
 function getHeadline2()   { return STATE.section2.headlineCustom  || DATA.section2.headlines[STATE.section2.headlineIndex]  || DATA.section2.headlines[0]; }
 function getSubheading2() { return STATE.section2.subheadingCustom || DATA.section2.subheadings[STATE.section2.subheadingIndex] || DATA.section2.subheadings[0]; }
@@ -132,7 +134,12 @@ function renderSection1Body() {
   return `
     <div class="field-group">
       <div class="field-label">Headline <span class="locked-badge">Locked</span></div>
-      <div class="preset-display">${esc(DATA.section1.headline)}</div>
+      <div class="preset-display" style="margin-bottom:6px;">${esc(DATA.section1.headline)}</div>
+      <div class="write-your-own-wrap ${STATE.section1.headlineCustom?'active':''}">
+        <div class="write-your-own-label">Write your own</div>
+        <textarea class="text-input" id="s1-headline-custom" rows="2"
+          placeholder="Alternative headline…" style="resize:vertical;">${esc(STATE.section1.headlineCustom)}</textarea>
+      </div>
     </div>
     <div class="field-group">
       <div class="field-label">Subheading</div>
@@ -186,7 +193,6 @@ function renderSection2Body() {
     return `
       <div class="sentinel-card ${active?'active':''}" onclick="setSentinel(${opt.id})">
         <div class="sentinel-card-label">${esc(opt.label)}</div>
-        <div class="sentinel-card-explanation">${esc(opt.explanation)}</div>
       </div>`;
   }).join('');
 
@@ -419,6 +425,7 @@ function renderSection4Body() {
 function wireLeftPanelInputs() {
   const bind = (id, ev, fn) => { const el = document.getElementById(id); if (el) el.addEventListener(ev, fn); };
 
+  bind('s1-headline-custom',   'input', e => { STATE.section1.headlineCustom   = e.target.value; saveState(); renderCanvas(); });
   bind('s1-subheading-custom', 'input', e => { STATE.section1.subheadingCustom = e.target.value; saveState(); renderCanvas(); });
   bind('s1-notes',             'input', e => { STATE.section1.notes            = e.target.value; saveState(); renderCanvas(); });
 
@@ -501,7 +508,7 @@ function renderCanvasSection1() {
     <div id="canvas-section1" class="cs-section cs-white" onclick="setActiveSection('section1')" style="cursor:pointer;">
       <div class="cs-section-tag">Section 1 — Hero</div>
       <div class="cs-center">
-        <h1 class="cs-headline">${esc(DATA.section1.headline)}</h1>
+        <h1 class="cs-headline">${esc(getHeadline1())}</h1>
         <p class="cs-subheading">${esc(subheading)}</p>
         ${STATE.section1.notes ? `<div class="notes-block" style="text-align:left;max-width:560px;">${esc(STATE.section1.notes)}</div>` : ''}
       </div>
@@ -565,6 +572,9 @@ function renderCanvasSection2() {
           <!-- Arrow down to outputs -->
           <div class="s2-connector-single">↓</div>
 
+          <!-- Authorised recipients -->
+          <div class="s2-authorised">Authorised recipients only</div>
+
           <!-- Output categories -->
           <div class="s2-outputs">
             ${cats.map(cat => `
@@ -576,9 +586,6 @@ function renderCanvasSection2() {
                 <div class="s2-output-desc">${esc(cat.desc)}</div>
               </div>`).join('')}
           </div>
-
-          <!-- Authorised recipients -->
-          <div class="s2-authorised">Authorised recipients only</div>
         </div>
 
         ${STATE.section2.notes ? `<div class="notes-block" style="text-align:left;max-width:700px;margin-top:24px;">${esc(STATE.section2.notes)}</div>` : ''}
@@ -695,23 +702,6 @@ function decisionsS2() {
           onclick="setSentinel(${opt.id})">${esc(opt.label)}</button>`).join('')}
       ${STATE.section2.sentinelCustomText ? `<button class="decision-option active">Custom: "${esc(STATE.section2.sentinelCustomText)}"</button>` : ''}
     </div>`;
-  const d3 = `
-    <div class="decision-card">
-      <h3>Decision 3 — Governed vs Controlled</h3>
-      <div style="font-size:0.67rem;color:#9ca3af;margin-bottom:6px;">Compare in context. Click to apply.</div>
-      <div class="gov-ctrl-pair">
-        <div class="gov-ctrl-option ${STATE.section2.sentinelIndex===3 && !STATE.section2.sentinelCustomText ? 'active' : ''}"
-          onclick="setSentinel(3)" style="cursor:pointer;">
-          <div class="gov-ctrl-phrase ${STATE.section2.sentinelIndex===3 ? 'active-phrase' : ''}">Governed access</div>
-          <div class="gov-ctrl-context">The <em>governance layer</em> — regulatory register: MiCA, SOC 2.</div>
-        </div>
-        <div class="gov-ctrl-option ${STATE.section2.sentinelIndex===1 && !STATE.section2.sentinelCustomText ? 'active' : ''}"
-          onclick="setSentinel(1)" style="cursor:pointer;">
-          <div class="gov-ctrl-phrase ${STATE.section2.sentinelIndex===1 ? 'active-phrase' : ''}">Controlled access layer</div>
-          <div class="gov-ctrl-context">The <em>controlled access layer</em> — technical, literal, ops register.</div>
-        </div>
-      </div>
-    </div>`;
   const d4 = `
     <div class="decision-card">
       <h3>Decision 4 — Output categories</h3>
@@ -721,7 +711,7 @@ function decisionsS2() {
           <span style="color:#9ca3af;font-size:0.7rem;"> · ${esc(cat.desc)||'No subheading'}</span>
         </div>`).join('')}
     </div>`;
-  return d1 + d2 + d3 + d4;
+  return d1 + d2 + d4;
 }
 
 function decisionsS3() {
