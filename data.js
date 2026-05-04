@@ -64,6 +64,7 @@ const DATA = {
       'Automate your blockchain operations',
       'From manual workarounds to always-on data operations',
       'Make your data work for you',
+      'Navigate your private chain data with ease',
     ],
     subheadings: [
       'An access and control layer that respects enterprise trust boundaries: governed and permission-aware throughout.',
