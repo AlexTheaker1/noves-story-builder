@@ -6,6 +6,7 @@ const DEFAULT_STATE = {
   ui: { activeSection: 'section1', showInstructions: false },
   section1: {
     headlineCustom: '',
+    subheadingIndex: 0,
     subheadingCustom: '',
     notes: '',
   },
@@ -87,8 +88,8 @@ function resetState() {
 
 // ─── CONTENT GETTERS ─────────────────────────────────────────
 
-function getHeadline1()    { return STATE.section1.headlineCustom   || DATA.section1.headline; }
-function getSubheading1() { return STATE.section1.subheadingCustom || DATA.section1.subheading; }
+function getHeadline1()   { return STATE.section1.headlineCustom  || DATA.section1.headline; }
+function getSubheading1() { return STATE.section1.subheadingCustom || DATA.section1.subheadings[STATE.section1.subheadingIndex] || DATA.section1.subheadings[0]; }
 function getHeadline2()   { return STATE.section2.headlineCustom  || DATA.section2.headlines[STATE.section2.headlineIndex]  || DATA.section2.headlines[0]; }
 function getSubheading2() { return STATE.section2.subheadingCustom || DATA.section2.subheadings[STATE.section2.subheadingIndex] || DATA.section2.subheadings[0]; }
 function getSentinelText(){ return STATE.section2.sentinelCustomText || DATA.section2.sentinelOptions[STATE.section2.sentinelIndex]?.label || 'Governed access'; }
@@ -146,7 +147,11 @@ function renderSection1Body() {
     </div>
     <div class="field-group">
       <div class="field-label">Subheading</div>
-      <div class="preset-display" style="margin-bottom:6px;">${esc(DATA.section1.subheading)}</div>
+      <div class="option-card-group">
+        ${DATA.section1.subheadings.map((s, i) => `
+          <div class="option-card ${STATE.section1.subheadingIndex===i && !STATE.section1.subheadingCustom ? 'active' : ''}"
+            onclick="setS1Subheading(${i})">${esc(s)}</div>`).join('')}
+      </div>
       <div class="write-your-own-wrap ${STATE.section1.subheadingCustom?'active':''}">
         <div class="write-your-own-label">Write your own</div>
         <textarea class="text-input" id="s1-subheading-custom" rows="3"
@@ -444,7 +449,7 @@ function wireLeftPanelInputs() {
   const bind = (id, ev, fn) => { const el = document.getElementById(id); if (el) el.addEventListener(ev, fn); };
 
   bind('s1-headline-custom',   'input', e => { STATE.section1.headlineCustom   = e.target.value; saveState(); renderCanvas(); });
-  bind('s1-subheading-custom', 'input', e => { STATE.section1.subheadingCustom = e.target.value; saveState(); renderCanvas(); });
+  bind('s1-subheading-custom', 'input', e => { STATE.section1.subheadingCustom = e.target.value; saveState(); renderLeftPanel(); renderCanvas(); });
   bind('s1-notes',             'input', e => { STATE.section1.notes            = e.target.value; saveState(); renderCanvas(); });
 
   bind('s2-headline-custom',   'input', e => { STATE.section2.headlineCustom    = e.target.value; saveState(); renderCanvas(); renderDecisionPanel(); });
@@ -813,6 +818,7 @@ function setActiveSection(key) {
   if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+function setS1Subheading(i) { STATE.section1.subheadingIndex  = i; STATE.section1.subheadingCustom  = ''; saveState(); renderLeftPanel(); renderCanvas(); }
 function setS2Headline(i)   { STATE.section2.headlineIndex   = i; STATE.section2.headlineCustom    = ''; saveState(); renderLeftPanel(); renderCanvas(); renderDecisionPanel(); }
 function setS2Subheading(i) { STATE.section2.subheadingIndex  = i; STATE.section2.subheadingCustom  = ''; saveState(); renderLeftPanel(); renderCanvas(); }
 function setSentinel(i)     { STATE.section2.sentinelIndex    = i; STATE.section2.sentinelCustomText = ''; saveState(); renderLeftPanel(); renderCanvas(); renderDecisionPanel(); }

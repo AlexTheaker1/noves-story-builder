@@ -4,7 +4,10 @@ const DATA = {
     id: 'section1',
     label: 'Section 1 — Hero',
     headline: 'Private data infrastructure for tokenized finance',
-    subheading: 'Noves gives institutions a single system to control who sees their private chain data, in what form, and for what purpose.',
+    subheadings: [
+      'Noves gives institutions a single system to control who sees their private chain data, in what form, and for what purpose.',
+      'The platform institutions use to govern access, format, and purpose across all digital asset operations.',
+    ],
   },
 
   section2: {
@@ -83,6 +86,7 @@ const DATA = {
     id: 'section4',
     label: 'Section 4 — Growth Story',
     headlines: [
+      'Build trust not workarounds',
       'Stop building workarounds. Focus on your business logic',
       'The data layer that scales with you.',
       'Compliance, audit and reporting that doesn\'t slow you down',
@@ -94,6 +98,7 @@ const DATA = {
       'Make operational speed your competitive advantage',
     ],
     subheadings: [
+      'Always-on infrastructure that removes bottlenecks and helps you move faster.',
       'Reporting, audits and compliance that coexist with your business operations.',
       'Institutions with always-on data infrastructure can move faster and scale their operations without adding headcount.',
       'Say goodbye to manual data processes.',
@@ -101,6 +106,9 @@ const DATA = {
       'The institutions that get their data layer right move faster',
     ],
     blocks: [
+      { id: 14, label: 'Close at finance speed',              copy: 'Reconciliation, period-end reporting, and audit responses for digital asset activity run on the same calendar as the rest of your finance function. No multi-week reconciliation marathons. No quarter-end heroics.' },
+      { id: 15, label: 'Same team, more output',              copy: 'As your digital asset book grows in volume, complexity, and counterparty count, the team running it doesn\'t need to grow with it. The platform absorbs the operational load that would otherwise become headcount.' },
+      { id: 16, label: 'Expand without rebuilding',           copy: 'Add a new chain, asset class, counterparty, or transaction type as a configuration task, not an engineering one. What used to take quarters, happens in days.' },
       { id: 0,  label: 'Maximize operational efficiency',      copy: 'Noves data layer scales with you for every new validator you add, every new counterparty you onboard, every new transaction type.' },
       { id: 1,  label: 'No new risk surface',                  copy: 'Your data is kept private by default with the ability to share securely with third parties when required. No data exfiltration, no risk exposure.' },
       { id: 2,  label: 'Automatic data ops scaling',           copy: 'Expand your footprint knowing the data infrastructure will scale with you. Every new validator, every new counterparty, every new transaction type can scale automatically.' },
