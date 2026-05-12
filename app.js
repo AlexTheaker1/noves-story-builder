@@ -204,14 +204,21 @@ function renderSection2Body() {
       </div>`;
   }).join('');
 
-  const outputCats = STATE.section2.outputCategories.map((cat, i) => `
+  const outputCats = STATE.section2.outputCategories.map((cat, i) => {
+    const presets = (DATA.section2.outputCategoryPresets || {})[i] || [];
+    const presetChips = presets.map(p => `
+      <button class="output-preset-chip" onclick="applyOutputPreset(${i}, ${JSON.stringify(p).replace(/"/g,'&quot;')})"
+        title="${esc(p.desc || p.label)}">${esc(p.label)}</button>`).join('');
+    return `
     <div class="output-cat-slot">
-      <div class="field-label" style="margin-bottom:4px;">Category ${i+1}</div>
+      <div class="field-label" style="margin-bottom:4px;">Category ${i+1}${presets.length ? `<span style="font-weight:400;color:#9ca3af;text-transform:none;letter-spacing:0;margin-left:6px;">— click to apply preset</span>` : ''}</div>
+      ${presets.length ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;">${presetChips}</div>` : ''}
       <input type="text" class="text-input" data-output-cat="${i}" data-output-field="label"
         placeholder="e.g. Finance" value="${esc(cat.label)}" style="margin-bottom:4px;">
       <input type="text" class="text-input" data-output-cat="${i}" data-output-field="desc"
         placeholder="Subheading…" value="${esc(cat.desc)}">
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   return `
     <div class="field-group">
@@ -826,6 +833,12 @@ function setS3Headline(i)   { STATE.section3.headlineIndex   = i; STATE.section3
 function setS3Subheading(i) { STATE.section3.subheadingIndex  = i; STATE.section3.subheadingCustom  = ''; saveState(); renderLeftPanel(); renderCanvas(); }
 function setS4Headline(i)   { STATE.section4.headlineIndex   = i; STATE.section4.headlineCustom    = ''; saveState(); renderLeftPanel(); renderCanvas(); renderDecisionPanel(); }
 function setS4Subheading(i) { STATE.section4.subheadingIndex  = i; STATE.section4.subheadingCustom  = ''; saveState(); renderLeftPanel(); renderCanvas(); }
+
+function applyOutputPreset(idx, preset) {
+  if (preset.label) STATE.section2.outputCategories[idx].label = preset.label;
+  if (preset.desc)  STATE.section2.outputCategories[idx].desc  = preset.desc;
+  saveState(); renderLeftPanel(); renderCanvas();
+}
 
 function addCustomBubble(type) {
   const input = document.getElementById(type + '-bubble-input');

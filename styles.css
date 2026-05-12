@@ -150,6 +150,13 @@ textarea.text-input { resize: vertical; line-height: 1.55; }
   background: #f9fafb; border: 1px solid #e5e7eb;
   border-radius: 8px; padding: 10px 12px;
 }
+.output-preset-chip {
+  font-size: 0.67rem; font-weight: 500; font-family: inherit;
+  color: #4338ca; background: #eef2ff; border: 1px solid #c7d2fe;
+  padding: 2px 8px; border-radius: 9999px; cursor: pointer;
+  transition: all 0.1s;
+}
+.output-preset-chip:hover { background: #e0e7ff; border-color: #a5b4fc; }
 
 /* ─── DECISION PANEL ──────────────────────────────────────── */
 .decision-panel { border-top: 1px solid #e5e7eb; background: white; padding: 1rem 1.5rem 1.25rem; flex-shrink: 0; }

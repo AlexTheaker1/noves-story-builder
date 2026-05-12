@@ -5,6 +5,7 @@ const DATA = {
     label: 'Section 1 — Hero',
     headline: 'Private data infrastructure for tokenized finance',
     subheadings: [
+      'The platform institutions use to govern access, format and intended purpose across all digital asset operations.',
       'Noves gives institutions a single system to control who sees their private chain data, in what form, and for what purpose.',
       'The platform institutions use to govern access, format, and purpose across all digital asset operations.',
     ],
@@ -14,6 +15,7 @@ const DATA = {
     id: 'section2',
     label: 'Section 2 — This Is For You',
     headlines: [
+      'Visibility without exposure',
       'Visibility without the exposure',
       '100% visibility, 0% exposure',
       'See everything. Expose nothing.',
@@ -27,6 +29,7 @@ const DATA = {
       'Control access to your data',
     ],
     subheadings: [
+      'Full control into who has access to your data, and on what terms.',
       'The right data reaches the right people and only them.',
       'Full visibility into your blockchain data. Total control over who sees it.',
       'The data sentinel you have always needed.',
@@ -49,6 +52,16 @@ const DATA = {
       { id: 'staking-rewards',    label: 'Staking rewards' },
       { id: 'dex-activity',       label: 'DEX activity' },
     ],
+    outputCategoryPresets: {
+      0: [ // Finance
+        { label: 'Finance', desc: 'Reporting, reconciliation and position data' },
+      ],
+      1: [ // Regulator
+        { label: 'Tax planners & auditors', desc: '' },
+        { label: 'Regulator', desc: 'Audit trail and regulatory outputs on demand' },
+      ],
+    },
+
     sentinelOptions: [
       { id: 0, label: 'The sentinel' },
       { id: 1, label: 'Controlled access layer' },
@@ -61,6 +74,7 @@ const DATA = {
     id: 'section3',
     label: 'Section 3 — In What Way',
     headlines: [
+      'Remove operational burden, stay in control.',
       'Remove operational burden without removing control',
       'Proactive, always-on compliance and reporting.',
       'From raw data to reportable output.',
@@ -70,6 +84,7 @@ const DATA = {
       'Navigate your private chain data with ease',
     ],
     subheadings: [
+      'Noves Data Platform simplifies operations, reporting and compliance, with guardrails to ensure privacy and security across your deployment.',
       'An access and control layer that respects enterprise trust boundaries: governed and permission-aware throughout.',
       'Meet supervisory expectations for traceability and control without adding new friction or bureaucracy.',
     ],
